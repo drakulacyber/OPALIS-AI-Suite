@@ -1,0 +1,19 @@
+{
+  "name": "Opalis AI Suite - Gemini & Opal Hub",
+  "short_name": "Opalis AI",
+  "description": "Professional Ecosystem & Suite for Gemini Gems, Shared Sessions, and Google Opal Apps.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0B0F19",
+  "theme_color": "#6366F1",
+  "orientation": "any",
+  "categories": ["productivity", "utilities", "developer tools", "artificial intelligence"],
+  "icons": [
+    {
+      "src": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><defs><linearGradient id='g1' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%236366f1'/><stop offset='50%' stop-color='%23a855f7'/><stop offset='100%' stop-color='%23ec4899'/></linearGradient><linearGradient id='g2' x1='100%' y1='0%' x2='0%' y2='100%'><stop offset='0%' stop-color='%2306b6d4'/><stop offset='100%' stop-color='%233b82f6'/></linearGradient></defs><rect width='512' height='512' rx='128' fill='%230b0f19'/><rect x='16' y='16' width='480' height='480' rx='112' fill='none' stroke='url(%23g1)' stroke-width='8' opacity='0.4'/><path d='M256 64 L360 200 L256 448 L152 200 Z' fill='url(%23g1)' opacity='0.85'/><path d='M256 64 L432 200 L256 272 L80 200 Z' fill='url(%23g2)' opacity='0.9'/><path d='M256 272 L360 200 L256 448 Z' fill='%23ffffff' opacity='0.25'/><circle cx='256' cy='200' r='36' fill='%23ffffff'/><circle cx='256' cy='200' r='20' fill='%236366f1'/></svg>",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
