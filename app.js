@@ -1,5 +1,5 @@
 /* ==========================================================================
-   OPALIS AI SUITE - APPLICATION CONTROLLER & DEEP-LINKING DATA STORE
+   OPALIS AI SUITE - APPLICATION CONTROLLER & STANDALONE PWA INSTALLER
    ========================================================================== */
 
 // Initial Seed Data with all user-provided Gemini Gems & Opal links
@@ -147,6 +147,7 @@ class OpalisApp {
     this.activeFilter = 'all';
     this.searchQuery = '';
     this.selectedAppForPlayground = null;
+    this.deferredPrompt = null;
 
     this.initElements();
     this.initEventListeners();
@@ -194,6 +195,7 @@ class OpalisApp {
     // Modals
     this.playgroundModal = document.getElementById('playgroundModal');
     this.addModal = document.getElementById('addModal');
+    this.installGuideModal = document.getElementById('installGuideModal');
     this.pwaToast = document.getElementById('pwaToast');
     this.toastMsg = document.getElementById('toastMsg');
     this.launchModeBtn = document.getElementById('launchModeBtn');
@@ -215,6 +217,22 @@ class OpalisApp {
         this.renderApps();
       });
     });
+
+    // Install Guide Modal Trigger
+    const installGuideBtn = document.getElementById('installGuideBtn');
+    if (installGuideBtn) {
+      installGuideBtn.addEventListener('click', () => {
+        this.installGuideModal.classList.add('active');
+        this.playSound(500, 'sine', 0.08);
+      });
+    }
+
+    const triggerNativeInstallBtn = document.getElementById('triggerNativeInstallBtn');
+    if (triggerNativeInstallBtn) {
+      triggerNativeInstallBtn.addEventListener('click', () => {
+        this.triggerNativeInstall();
+      });
+    }
 
     // Launch Mode Switcher (APK App Direct vs Web Browser)
     if (this.launchModeBtn) {
@@ -283,21 +301,29 @@ class OpalisApp {
     });
 
     document.getElementById('installPwaBtn').addEventListener('click', () => {
-      if (this.deferredPrompt) {
-        this.deferredPrompt.prompt();
-        this.deferredPrompt.userChoice.then((choiceResult) => {
-          if (choiceResult.outcome === 'accepted') {
-            this.showToast('Terima kasih telah memasang Opalis AI!');
-          }
-          this.deferredPrompt = null;
-          this.pwaToast.classList.remove('active');
-        });
-      }
+      this.triggerNativeInstall();
     });
 
     document.getElementById('closePwaToast').addEventListener('click', () => {
       this.pwaToast.classList.remove('active');
     });
+  }
+
+  triggerNativeInstall() {
+    if (this.deferredPrompt) {
+      this.deferredPrompt.prompt();
+      this.deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+          this.showToast('Terima kasih telah memasang Opalis AI!');
+        }
+        this.deferredPrompt = null;
+        this.pwaToast.classList.remove('active');
+        this.installGuideModal.classList.remove('active');
+      });
+    } else {
+      // Show guide message if browser didn't emit beforeinstallprompt (e.g. non-HTTPS IP or already installed)
+      this.showToast('Gunakan Menu Browser: "Tambahkan ke Layar Utama" / "Add to Home Screen"');
+    }
   }
 
   updateLaunchModeUI() {
@@ -317,20 +343,14 @@ class OpalisApp {
     }
   }
 
-  /**
-   * Generates Android Intent Deep Link for Gemini App APK (package: com.google.android.apps.bard)
-   * or standard HTTPS fallback if on web desktop.
-   */
   getDeepLinkUrl(url, platform) {
     if (this.launchMode === 'app') {
       const cleanUrl = url.replace(/^https?:\/\//, '');
       const encodedFallback = encodeURIComponent(url);
 
       if (platform === 'gemini' || platform === 'share') {
-        // Android Intent for Google Gemini Native App
         return `intent://${cleanUrl}#Intent;scheme=https;package=com.google.android.apps.bard;S.browser_fallback_url=${encodedFallback};end`;
       } else if (platform === 'opal') {
-        // Android Intent for Google Assistant / Opal App
         return `intent://${cleanUrl}#Intent;scheme=https;package=com.google.android.googlequicksearchbox;S.browser_fallback_url=${encodedFallback};end`;
       }
     }
@@ -363,6 +383,7 @@ class OpalisApp {
   closeModals() {
     this.playgroundModal.classList.remove('active');
     this.addModal.classList.remove('active');
+    this.installGuideModal.classList.remove('active');
   }
 
   handleAddNewApp() {

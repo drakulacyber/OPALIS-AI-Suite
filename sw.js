@@ -1,17 +1,19 @@
-const CACHE_NAME = 'opalis-ai-v1';
+const CACHE_NAME = 'opalis-ai-v2';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './style.css',
   './app.js',
-  './manifest.json'
+  './manifest.json',
+  './icon-192.png',
+  './icon-512.png'
 ];
 
 // Install Event
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      console.log('[Service Worker] Caching app shell & assets');
+      console.log('[Service Worker] Caching app shell & PNG icons');
       return cache.addAll(ASSETS_TO_CACHE);
     }).then(() => self.skipWaiting())
   );
@@ -33,7 +35,7 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Fetch Event with Network-first, fallback to cache
+// Fetch Event
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
   
