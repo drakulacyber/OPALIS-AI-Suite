@@ -1,5 +1,5 @@
 /* ==========================================================================
-   OPALIS AI SUITE - APPLICATION CONTROLLER & DATA STORE
+   OPALIS AI SUITE - APPLICATION CONTROLLER & DEEP-LINKING DATA STORE
    ========================================================================== */
 
 // Initial Seed Data with all user-provided Gemini Gems & Opal links
@@ -143,6 +143,7 @@ class OpalisApp {
   constructor() {
     this.apps = this.loadApps();
     this.favorites = this.loadFavorites();
+    this.launchMode = localStorage.getItem('opalis_launch_mode') || 'app'; // 'app' (APK Direct Intent) or 'web'
     this.activeFilter = 'all';
     this.searchQuery = '';
     this.selectedAppForPlayground = null;
@@ -152,6 +153,7 @@ class OpalisApp {
     this.registerServiceWorker();
     this.renderApps();
     this.updateStats();
+    this.updateLaunchModeUI();
   }
 
   loadApps() {
@@ -194,6 +196,7 @@ class OpalisApp {
     this.addModal = document.getElementById('addModal');
     this.pwaToast = document.getElementById('pwaToast');
     this.toastMsg = document.getElementById('toastMsg');
+    this.launchModeBtn = document.getElementById('launchModeBtn');
   }
 
   initEventListeners() {
@@ -204,7 +207,7 @@ class OpalisApp {
     });
 
     this.filterPills.forEach(pill => {
-      pill.addEventListener('click', (e) => {
+      pill.addEventListener('click', () => {
         this.filterPills.forEach(p => p.classList.remove('active'));
         pill.classList.add('active');
         this.activeFilter = pill.dataset.filter;
@@ -212,6 +215,19 @@ class OpalisApp {
         this.renderApps();
       });
     });
+
+    // Launch Mode Switcher (APK App Direct vs Web Browser)
+    if (this.launchModeBtn) {
+      this.launchModeBtn.addEventListener('click', () => {
+        this.launchMode = this.launchMode === 'app' ? 'web' : 'app';
+        localStorage.setItem('opalis_launch_mode', this.launchMode);
+        this.updateLaunchModeUI();
+        this.renderApps();
+        const modeLabel = this.launchMode === 'app' ? 'APK App Gemini Direct 📱' : 'Web Browser 🌐';
+        this.showToast(`Mode Peluncuran: ${modeLabel}`);
+        this.playSound(640, 'triangle', 0.08);
+      });
+    }
 
     // Theme Toggle
     document.getElementById('themeToggleBtn').addEventListener('click', () => {
@@ -254,9 +270,8 @@ class OpalisApp {
 
     document.getElementById('launchDirectBtn').addEventListener('click', () => {
       if (this.selectedAppForPlayground) {
-        const text = encodeURIComponent(document.getElementById('playgroundTextarea').value);
-        let launchUrl = this.selectedAppForPlayground.url;
-        window.open(launchUrl, '_blank');
+        const targetUrl = this.getDeepLinkUrl(this.selectedAppForPlayground.url, this.selectedAppForPlayground.platform);
+        window.location.href = targetUrl;
       }
     });
 
@@ -272,7 +287,7 @@ class OpalisApp {
         this.deferredPrompt.prompt();
         this.deferredPrompt.userChoice.then((choiceResult) => {
           if (choiceResult.outcome === 'accepted') {
-            this.showToast('Thank you for installing Opalis AI!');
+            this.showToast('Terima kasih telah memasang Opalis AI!');
           }
           this.deferredPrompt = null;
           this.pwaToast.classList.remove('active');
@@ -285,13 +300,50 @@ class OpalisApp {
     });
   }
 
+  updateLaunchModeUI() {
+    if (!this.launchModeBtn) return;
+    if (this.launchMode === 'app') {
+      this.launchModeBtn.innerHTML = `
+        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+        <span>Mode APK Gemini</span>
+      `;
+      this.launchModeBtn.style.borderColor = 'rgba(6, 182, 212, 0.6)';
+    } else {
+      this.launchModeBtn.innerHTML = `
+        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
+        <span>Mode Web Browser</span>
+      `;
+      this.launchModeBtn.style.borderColor = 'var(--glass-border)';
+    }
+  }
+
+  /**
+   * Generates Android Intent Deep Link for Gemini App APK (package: com.google.android.apps.bard)
+   * or standard HTTPS fallback if on web desktop.
+   */
+  getDeepLinkUrl(url, platform) {
+    if (this.launchMode === 'app') {
+      const cleanUrl = url.replace(/^https?:\/\//, '');
+      const encodedFallback = encodeURIComponent(url);
+
+      if (platform === 'gemini' || platform === 'share') {
+        // Android Intent for Google Gemini Native App
+        return `intent://${cleanUrl}#Intent;scheme=https;package=com.google.android.apps.bard;S.browser_fallback_url=${encodedFallback};end`;
+      } else if (platform === 'opal') {
+        // Android Intent for Google Assistant / Opal App
+        return `intent://${cleanUrl}#Intent;scheme=https;package=com.google.android.googlequicksearchbox;S.browser_fallback_url=${encodedFallback};end`;
+      }
+    }
+    return url;
+  }
+
   toggleFavorite(id) {
     if (this.favorites.includes(id)) {
       this.favorites = this.favorites.filter(favId => favId !== id);
-      this.showToast('Removed from Favorites');
+      this.showToast('Dihapus dari Favorit');
     } else {
       this.favorites.push(id);
-      this.showToast('Added to Favorites ❤️');
+      this.showToast('Ditambahkan ke Favorit ❤️');
       this.playSound(600, 'sine', 0.1);
     }
     this.saveFavorites();
@@ -345,7 +397,7 @@ class OpalisApp {
     this.closeModals();
     this.renderApps();
     this.updateStats();
-    this.showToast('New Gem / Opal App added!');
+    this.showToast('Gem / Opal App Baru Berhasil Ditambahkan!');
     this.playSound(750, 'triangle', 0.1);
   }
 
@@ -375,8 +427,8 @@ class OpalisApp {
       this.gridEl.innerHTML = `
         <div class="empty-state">
           <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-          <h3>No Gems or Opal apps found</h3>
-          <p style="color: var(--text-muted); margin-top: 0.5rem;">Try adjusting your search query or category filters.</p>
+          <h3>Tidak ada Gem atau Opal App ditemukan</h3>
+          <p style="color: var(--text-muted); margin-top: 0.5rem;">Coba sesuaikan kata kunci pencarian atau filter kategori.</p>
         </div>
       `;
       return;
@@ -398,6 +450,7 @@ class OpalisApp {
       }
 
       const tagsHtml = app.tags.map(t => `<span class="tag-chip">${t}</span>`).join('');
+      const targetLaunchUrl = this.getDeepLinkUrl(app.url, app.platform);
 
       card.innerHTML = `
         <div>
@@ -405,7 +458,7 @@ class OpalisApp {
             <div class="card-icon">${app.icon}</div>
             <div class="card-actions">
               <span class="platform-badge ${platformBadgeClass}">${platformLabel}</span>
-              <button class="fav-btn ${isFav ? 'active' : ''}" data-id="${app.id}" title="Toggle Favorite">
+              <button class="fav-btn ${isFav ? 'active' : ''}" data-id="${app.id}" title="Favorit">
                 ${isFav ? '❤️' : '🤍'}
               </button>
             </div>
@@ -415,9 +468,9 @@ class OpalisApp {
           <div class="card-tags">${tagsHtml}</div>
         </div>
         <div class="card-footer">
-          <a href="${app.url}" target="_blank" rel="noopener noreferrer" class="btn-launch">
-            <span>Launch App</span>
-            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+          <a href="${targetLaunchUrl}" class="btn-launch" title="Buka langsung di APK Gemini / App">
+            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+            <span>Buka APK Gemini</span>
           </a>
           <button class="btn-playground" data-id="${app.id}" title="Open Prompt Playground">
             <span>Playground</span>
@@ -468,7 +521,7 @@ class OpalisApp {
       osc.start();
       osc.stop(ctx.currentTime + duration);
     } catch (e) {
-      // Audio context might be restricted before user interaction
+      // Audio context restricted before user gesture
     }
   }
 

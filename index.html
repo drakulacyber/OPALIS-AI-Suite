@@ -6,7 +6,7 @@
   <title>OPALIS AI - Premier Gemini Gems & Opal Apps Suite</title>
 
   <!-- PWA Meta Tags -->
-  <meta name="description" content="Opalis AI Suite: Platform Hub & Launchpad PWA Profesional untuk Gemini Gems, Google Opal Apps, dan Shared AI Assistants.">
+  <meta name="description" content="Opalis AI Suite: Platform Hub & Launchpad PWA Profesional untuk Gemini Gems, Google Opal Apps, dan Shared AI Assistants dengan peluncuran APK Direct.">
   <meta name="theme-color" content="#0B0F19">
   <link rel="manifest" href="./manifest.json">
   <link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='128' fill='%230b0f19'/><path d='M256 64 L360 200 L256 448 L152 200 Z' fill='%236366f1'/></svg>">
@@ -16,7 +16,7 @@
   <!-- Open Graph / SEO -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="OPALIS AI - Premier Gemini Gems & Opal Apps Suite">
-  <meta property="og:description" content="Koleksi PWA AI Assistants, Gemini Gems, dan Opal Apps terbaik, profesional, dan fleksibel.">
+  <meta property="og:description" content="Koleksi PWA AI Assistants, Gemini Gems, dan Opal Apps dengan dukungan peluncuran langsung ke Aplikasi APK Gemini.">
 
   <!-- Fonts & Stylesheet -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -54,6 +54,12 @@
       </a>
 
       <div class="nav-actions">
+        <!-- Launch Mode Switcher Button -->
+        <button class="btn-outline" id="launchModeBtn" title="Ganti Mode Peluncuran (APK Gemini / Web Browser)">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+          <span>Mode APK Gemini</span>
+        </button>
+
         <button class="btn-icon" id="themeToggleBtn" title="Toggle Light/Dark Theme">
           <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
         </button>
@@ -70,14 +76,14 @@
     <div class="container">
       <div class="hero-tag">
         <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
-        <span>Next-Gen Gemini Gems & Google Opal Hub</span>
+        <span>Direct Gemini APK Android & Opal Apps Hub</span>
       </div>
 
       <h1 class="hero-title">
-        Pusat Ekosistem AI Specialist <br> <span>Gemini & Opal Launchpad</span>
+        Peluncur Langsung ke <br> <span>Aplikasi APK Gemini Android</span>
       </h1>
       <p class="hero-subtitle">
-        Akses instan ke Storybook, Senior Code Architect, Visual Designer, Copywriter, hingga Google Opal Smart Automation Apps langsung dari Progressive Web App ultra-cepat Anda.
+        Klik tombol "Buka APK Gemini" untuk langsung membuka Gem atau Opal App di dalam aplikasi resmi Gemini Android tanpa hambatan web browser.
       </p>
 
       <!-- Stats counter -->
@@ -138,7 +144,7 @@
       </div>
       <div class="modal-body">
         <p style="font-size: 0.9rem; color: var(--text-muted);">
-          Uji coba preset instruksi prompt sebelum langsung membuka Gem / Opal App.
+          Uji coba preset instruksi prompt sebelum langsung membuka Gem / Opal di APK Gemini.
         </p>
 
         <div class="form-group">
@@ -158,7 +164,7 @@
             <span>Salin Prompt</span>
           </button>
           <button class="btn-primary" id="launchDirectBtn" style="flex: 1.2;">
-            <span>Jalankan di Gem / Opal</span>
+            <span>Buka APK Gemini</span>
             <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
           </button>
         </div>
@@ -234,7 +240,7 @@
   <div class="pwa-toast" id="pwaToast">
     <div class="pwa-toast-text">
       <h4>Install Opalis AI App</h4>
-      <p>Pasang di Home Screen / Desktop untuk akses offline cepat.</p>
+      <p>Pasang di Home Screen HP untuk akses cepat ke APK Gemini.</p>
     </div>
     <button class="btn-primary" id="installPwaBtn" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">Install</button>
     <button class="modal-close" id="closePwaToast" style="font-size: 1.2rem;">&times;</button>
@@ -246,7 +252,7 @@
   <!-- Footer -->
   <footer class="footer">
     <div class="container">
-      <p>OPALIS AI Suite &copy; 2026. Designed for Gemini Gems & Google Opal Ecosystem.</p>
+      <p>OPALIS AI Suite &copy; 2026. Designed with Direct Android APK Intent Deep Linking.</p>
     </div>
   </footer>
 
