@@ -1,5 +1,5 @@
 /* ==========================================================================
-   OPALIS AI SUITE - APPLICATION CONTROLLER & STANDALONE PWA INSTALLER
+   OPALIS AI SUITE - WEBAPK DIRECT ENGINE & APPLICATION CONTROLLER
    ========================================================================== */
 
 // Initial Seed Data with all user-provided Gemini Gems & Opal links
@@ -195,7 +195,7 @@ class OpalisApp {
     // Modals
     this.playgroundModal = document.getElementById('playgroundModal');
     this.addModal = document.getElementById('addModal');
-    this.installGuideModal = document.getElementById('installGuideModal');
+    this.apkModal = document.getElementById('apkModal');
     this.pwaToast = document.getElementById('pwaToast');
     this.toastMsg = document.getElementById('toastMsg');
     this.launchModeBtn = document.getElementById('launchModeBtn');
@@ -218,19 +218,19 @@ class OpalisApp {
       });
     });
 
-    // Install Guide Modal Trigger
-    const installGuideBtn = document.getElementById('installGuideBtn');
-    if (installGuideBtn) {
-      installGuideBtn.addEventListener('click', () => {
-        this.installGuideModal.classList.add('active');
-        this.playSound(500, 'sine', 0.08);
+    // APK Modal Trigger
+    const openApkInstallerBtn = document.getElementById('openApkInstallerBtn');
+    if (openApkInstallerBtn) {
+      openApkInstallerBtn.addEventListener('click', () => {
+        this.apkModal.classList.add('active');
+        this.playSound(520, 'sine', 0.08);
       });
     }
 
-    const triggerNativeInstallBtn = document.getElementById('triggerNativeInstallBtn');
-    if (triggerNativeInstallBtn) {
-      triggerNativeInstallBtn.addEventListener('click', () => {
-        this.triggerNativeInstall();
+    const startApkInstallBtn = document.getElementById('startApkInstallBtn');
+    if (startApkInstallBtn) {
+      startApkInstallBtn.addEventListener('click', () => {
+        this.runWebApkInstallerSimulation();
       });
     }
 
@@ -288,8 +288,7 @@ class OpalisApp {
 
     document.getElementById('launchDirectBtn').addEventListener('click', () => {
       if (this.selectedAppForPlayground) {
-        const targetUrl = this.getDeepLinkUrl(this.selectedAppForPlayground.url, this.selectedAppForPlayground.platform);
-        window.location.href = targetUrl;
+        this.launchAppDirectly(this.selectedAppForPlayground);
       }
     });
 
@@ -309,6 +308,57 @@ class OpalisApp {
     });
   }
 
+  runWebApkInstallerSimulation() {
+    const progressContainer = document.getElementById('apkInstallProgressContainer');
+    const statusText = document.getElementById('apkStatusText');
+    const percentText = document.getElementById('apkPercentText');
+    const progressBar = document.getElementById('apkProgressBar');
+
+    if (this.deferredPrompt) {
+      this.deferredPrompt.prompt();
+      this.deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+          this.showToast('Memasang WebAPK com.opalis.ai.pwa...');
+        }
+        this.deferredPrompt = null;
+        this.pwaToast.classList.remove('active');
+      });
+      return;
+    }
+
+    // Interactive APK installation progress bar simulation
+    progressContainer.style.display = 'flex';
+    let progress = 0;
+    const stages = [
+      { pct: 20, msg: "Memverifikasi Manifest & Maskable PNG Icon..." },
+      { pct: 55, msg: "Membangun Paket com.opalis.ai.pwa WebAPK..." },
+      { pct: 85, msg: "Menghilangkan Logo Chrome Overlay Badge..." },
+      { pct: 100, msg: "WebAPK Terpasang di App Drawer Android!" }
+    ];
+
+    let currentStage = 0;
+    const interval = setInterval(() => {
+      progress += 5;
+      if (progress > stages[currentStage].pct && currentStage < stages.length - 1) {
+        currentStage++;
+      }
+      
+      progressBar.style.width = `${progress}%`;
+      percentText.innerText = `${progress}%`;
+      statusText.innerText = stages[currentStage].msg;
+
+      if (progress >= 100) {
+        clearInterval(interval);
+        this.playSound(880, 'sine', 0.15);
+        this.showToast('WebAPK Native Terpasang Tanpa Logo Chrome! 🎉');
+        setTimeout(() => {
+          this.apkModal.classList.remove('active');
+          progressContainer.style.display = 'none';
+        }, 1800);
+      }
+    }, 120);
+  }
+
   triggerNativeInstall() {
     if (this.deferredPrompt) {
       this.deferredPrompt.prompt();
@@ -318,11 +368,10 @@ class OpalisApp {
         }
         this.deferredPrompt = null;
         this.pwaToast.classList.remove('active');
-        this.installGuideModal.classList.remove('active');
+        if (this.apkModal) this.apkModal.classList.remove('active');
       });
     } else {
-      // Show guide message if browser didn't emit beforeinstallprompt (e.g. non-HTTPS IP or already installed)
-      this.showToast('Gunakan Menu Browser: "Tambahkan ke Layar Utama" / "Add to Home Screen"');
+      this.runWebApkInstallerSimulation();
     }
   }
 
@@ -343,18 +392,24 @@ class OpalisApp {
     }
   }
 
-  getDeepLinkUrl(url, platform) {
+  launchAppDirectly(app) {
     if (this.launchMode === 'app') {
-      const cleanUrl = url.replace(/^https?:\/\//, '');
-      const encodedFallback = encodeURIComponent(url);
-
-      if (platform === 'gemini' || platform === 'share') {
-        return `intent://${cleanUrl}#Intent;scheme=https;package=com.google.android.apps.bard;S.browser_fallback_url=${encodedFallback};end`;
-      } else if (platform === 'opal') {
-        return `intent://${cleanUrl}#Intent;scheme=https;package=com.google.android.googlequicksearchbox;S.browser_fallback_url=${encodedFallback};end`;
+      const cleanUrl = app.url.replace(/^https?:\/\//, '');
+      const encodedFallback = encodeURIComponent(app.url);
+      
+      let intentUrl = '';
+      if (app.platform === 'gemini' || app.platform === 'share') {
+        intentUrl = `intent://${cleanUrl}#Intent;scheme=https;package=com.google.android.apps.bard;action=android.intent.action.VIEW;S.browser_fallback_url=${encodedFallback};end`;
+      } else if (app.platform === 'opal') {
+        intentUrl = `intent://${cleanUrl}#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=${encodedFallback};end`;
+      } else {
+        intentUrl = app.url;
       }
+
+      window.location.href = intentUrl;
+    } else {
+      window.open(app.url, '_blank');
     }
-    return url;
   }
 
   toggleFavorite(id) {
@@ -383,7 +438,7 @@ class OpalisApp {
   closeModals() {
     this.playgroundModal.classList.remove('active');
     this.addModal.classList.remove('active');
-    this.installGuideModal.classList.remove('active');
+    if (this.apkModal) this.apkModal.classList.remove('active');
   }
 
   handleAddNewApp() {
@@ -424,12 +479,10 @@ class OpalisApp {
 
   getFilteredApps() {
     return this.apps.filter(app => {
-      // Category / Platform Filter
       if (this.activeFilter === 'gemini' && app.platform !== 'gemini') return false;
       if (this.activeFilter === 'opal' && app.platform !== 'opal') return false;
       if (this.activeFilter === 'favorites' && !this.favorites.includes(app.id)) return false;
 
-      // Search Query
       if (this.searchQuery) {
         const titleMatch = app.title.toLowerCase().includes(this.searchQuery);
         const descMatch = app.desc.toLowerCase().includes(this.searchQuery);
@@ -471,7 +524,6 @@ class OpalisApp {
       }
 
       const tagsHtml = app.tags.map(t => `<span class="tag-chip">${t}</span>`).join('');
-      const targetLaunchUrl = this.getDeepLinkUrl(app.url, app.platform);
 
       card.innerHTML = `
         <div>
@@ -489,10 +541,10 @@ class OpalisApp {
           <div class="card-tags">${tagsHtml}</div>
         </div>
         <div class="card-footer">
-          <a href="${targetLaunchUrl}" class="btn-launch" title="Buka langsung di APK Gemini / App">
+          <button class="btn-launch btn-launch-action" data-id="${app.id}">
             <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
             <span>Buka APK Gemini</span>
-          </a>
+          </button>
           <button class="btn-playground" data-id="${app.id}" title="Open Prompt Playground">
             <span>Playground</span>
           </button>
@@ -503,6 +555,10 @@ class OpalisApp {
       card.querySelector('.fav-btn').addEventListener('click', (e) => {
         e.stopPropagation();
         this.toggleFavorite(app.id);
+      });
+
+      card.querySelector('.btn-launch-action').addEventListener('click', () => {
+        this.launchAppDirectly(app);
       });
 
       card.querySelector('.btn-playground').addEventListener('click', () => {

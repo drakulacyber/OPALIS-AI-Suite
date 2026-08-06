@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>OPALIS AI - Standalone PWA App</title>
+  <title>OPALIS AI - Native Android APK & PWA Suite</title>
 
   <!-- PWA Meta Tags -->
-  <meta name="description" content="Opalis AI Suite: Aplikasi PWA Standalone Native untuk Gemini Gems dan Google Opal Apps.">
+  <meta name="description" content="Opalis AI Suite: Aplikasi Standalone WebAPK Native tanpa logo Chrome untuk Gemini Gems dan Google Opal Apps.">
   <meta name="theme-color" content="#0B0F19">
   <link rel="manifest" href="./manifest.json">
   <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
@@ -17,8 +17,8 @@
 
   <!-- Open Graph / SEO -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="OPALIS AI - Standalone PWA App">
-  <meta property="og:description" content="Aplikasi PWA Standalone Native dengan dukungan instalasi langsung di Layar Utama HP / PC.">
+  <meta property="og:title" content="OPALIS AI - Native Android APK & PWA Suite">
+  <meta property="og:description" content="Aplikasi Standalone WebAPK Native tanpa logo Chrome.">
 
   <!-- Fonts & Stylesheet -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -36,14 +36,14 @@
           <img src="./icon-192.png" alt="Opalis Logo" style="width: 28px; height: 28px; border-radius: 6px;">
         </div>
         <span class="brand-title">OPALIS AI</span>
-        <span class="badge-pro">NATIVE PWA</span>
+        <span class="badge-pro">WEBAPK NATIVE</span>
       </a>
 
       <div class="nav-actions">
-        <!-- Install Guide Trigger -->
-        <button class="btn-outline" id="installGuideBtn" title="Cara Install Jadi Aplikasi">
+        <!-- Direct APK Installer Button -->
+        <button class="btn-primary" id="openApkInstallerBtn" style="background: linear-gradient(135deg, #10B981 0%, #059669 100%); border: none; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);">
           <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-          <span>Cara Install App</span>
+          <span>Install APK Direct 📦</span>
         </button>
 
         <!-- Launch Mode Switcher Button -->
@@ -55,10 +55,6 @@
         <button class="btn-icon" id="themeToggleBtn" title="Toggle Light/Dark Theme">
           <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
         </button>
-        <button class="btn-primary" id="openAddBtn">
-          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-          <span>Tambah Gem / Opal</span>
-        </button>
       </div>
     </div>
   </header>
@@ -68,14 +64,14 @@
     <div class="container">
       <div class="hero-tag">
         <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
-        <span>Standalone PWA Native App Installed</span>
+        <span>WebAPK Standalone App - Without Chrome Badge Logo</span>
       </div>
 
       <h1 class="hero-title">
-        Aplikasi Native PWA <br> <span>Gemini & Opal Launcher</span>
+        Aplikasi Native WebAPK <br> <span>Tanpa Logo Chrome</span>
       </h1>
       <p class="hero-subtitle">
-        Pasang Opalis AI langsung ke Layar Utama (Home Screen) smartphone atau desktop Anda. Tampilan standalone tanpa URL bar browser!
+        Di-install langsung ke App Drawer Android sebagai aplikasi APK independen. Tanpa ikon badge Chrome, tanpa URL bar, 100% tampilan aplikasi native!
       </p>
 
       <!-- Stats counter -->
@@ -124,43 +120,50 @@
     </div>
   </main>
 
-  <!-- Install PWA Guide Modal -->
-  <div class="modal-overlay" id="installGuideModal">
+  <!-- Direct APK Installer Modal -->
+  <div class="modal-overlay" id="apkModal">
     <div class="modal-container">
       <div class="modal-header">
         <div class="modal-title">
-          <span>📲</span>
-          <h3>Panduan Cara Install Sebagai Aplikasi Native</h3>
+          <span>📦</span>
+          <h3>Install WebAPK Android (Tanpa Logo Chrome)</h3>
         </div>
         <button class="modal-close">&times;</button>
       </div>
       <div class="modal-body">
         <p style="font-size: 0.95rem; color: var(--text-main); line-height: 1.6;">
-          Agar <strong>Opalis AI</strong> muncul di Layar Utama HP / Laptop Anda sebagai <strong>aplikasi mandiri (standalone app) tanpa address bar browser</strong>, ikuti langkah mudah berikut:
+          Dapatkan paket <strong>com.opalis.ai.pwa</strong> terpasang langsung di App Drawer Android Anda tanpa logo pintasan Chrome!
         </p>
 
-        <div style="background: rgba(255,255,255,0.04); border: 1px solid var(--glass-border); border-radius: var(--radius-md); padding: 1rem; display: flex; flex-direction: column; gap: 0.8rem;">
-          <h4 style="color: #818CF8; font-size: 0.95rem; font-weight: 700;">📱 Di Android / Chrome Mobile:</h4>
-          <ol style="margin-left: 1.2rem; font-size: 0.88rem; color: var(--text-muted); display: flex; flex-direction: column; gap: 0.4rem;">
-            <li>Klik ikon <strong>Titik Tiga (&vellip;)</strong> di pojok kanan atas browser Chrome HP.</li>
-            <li>Pilih menu <strong>"Tambahkan ke Layar Utama" (Add to Home screen)</strong> atau <strong>"Install Aplikasi"</strong>.</li>
-            <li>Klik <strong>Install</strong>. Aplikasi akan langsung muncul di menu HP dengan ikon tersendiri!</li>
-          </ol>
+        <!-- Installation Status / Progress Bar -->
+        <div id="apkInstallProgressContainer" style="display: none; flex-direction: column; gap: 0.5rem; margin: 1rem 0;">
+          <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-muted);">
+            <span id="apkStatusText">Mempersiapkan WebAPK...</span>
+            <span id="apkPercentText">0%</span>
+          </div>
+          <div style="width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden;">
+            <div id="apkProgressBar" style="width: 0%; height: 100%; background: linear-gradient(90deg, #10B981, #06B6D4); transition: width 0.3s ease;"></div>
+          </div>
         </div>
 
-        <div style="background: rgba(255,255,255,0.04); border: 1px solid var(--glass-border); border-radius: var(--radius-md); padding: 1rem; display: flex; flex-direction: column; gap: 0.8rem; margin-top: 0.5rem;">
-          <h4 style="color: #22D3EE; font-size: 0.95rem; font-weight: 700;">💻 Di Komputer / PC (Chrome, Edge, Brave):</h4>
-          <ol style="margin-left: 1.2rem; font-size: 0.88rem; color: var(--text-muted); display: flex; flex-direction: column; gap: 0.4rem;">
-            <li>Lihat di <strong>Address Bar (bilah alamat URL)</strong> sebelah kanan atas.</li>
-            <li>Klik ikon <strong>Install (&DownArrow;)</strong> atau klik tombol <strong>"Install App"</strong> di bawah.</li>
-            <li>Aplikasi akan berjalan dalam jendela tersendiri layaknya software bawaan Windows!</li>
-          </ol>
+        <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: var(--radius-md); padding: 1rem; display: flex; flex-direction: column; gap: 0.8rem;">
+          <h4 style="color: #34D399; font-size: 0.95rem; font-weight: 700;">✅ Syarat WebAPK Murni (Bebas Ikon Badge Chrome):</h4>
+          <ul style="margin-left: 1.2rem; font-size: 0.88rem; color: var(--text-muted); display: flex; flex-direction: column; gap: 0.4rem;">
+            <li>Aplikasi di-install melalui prompt resmi Chrome / WebAPK service.</li>
+            <li>Menggunakan protokol HTTPS / Localhost tersertifikasi.</li>
+            <li>Memiliki paket <code>manifest.json</code> dengan <code>display: "standalone"</code> & PNG Maskable Icon.</li>
+          </ul>
         </div>
 
-        <div style="display: flex; gap: 0.8rem; margin-top: 1rem;">
-          <button class="btn-primary" id="triggerNativeInstallBtn" style="flex: 1; padding: 0.75rem;">
-            <span>Klik Untuk Install Langsung</span>
+        <div style="display: flex; flex-direction: column; gap: 0.8rem; margin-top: 1rem;">
+          <button class="btn-primary" id="startApkInstallBtn" style="background: linear-gradient(135deg, #10B981 0%, #059669 100%); padding: 0.85rem; justify-content: center; font-size: 1rem;">
+            <span>🚀 JALANKAN INSTALASI WEBAPK NATIVE</span>
           </button>
+          
+          <a href="https://www.pwabuilder.com" target="_blank" rel="noopener" class="btn-outline" style="justify-content: center; text-decoration: none;">
+            <span>Build File .APK Android Standalone (PWABuilder)</span>
+            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+          </a>
         </div>
       </div>
     </div>
@@ -273,10 +276,10 @@
   <!-- PWA Install Banner Toast -->
   <div class="pwa-toast" id="pwaToast">
     <div class="pwa-toast-text">
-      <h4>Install Opalis AI App</h4>
-      <p>Pasang di Layar Utama HP / Desktop sebagai aplikasi native.</p>
+      <h4>Install WebAPK Opalis AI</h4>
+      <p>Pasang di App Drawer HP tanpa logo Chrome.</p>
     </div>
-    <button class="btn-primary" id="installPwaBtn" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">Install App</button>
+    <button class="btn-primary" id="installPwaBtn" style="padding: 0.4rem 0.8rem; font-size: 0.8rem; background: #10B981;">Install WebAPK</button>
     <button class="modal-close" id="closePwaToast" style="font-size: 1.2rem;">&times;</button>
   </div>
 
@@ -286,7 +289,7 @@
   <!-- Footer -->
   <footer class="footer">
     <div class="container">
-      <p>OPALIS AI Suite &copy; 2026. Standalone PWA Native App Engine.</p>
+      <p>OPALIS AI Suite &copy; 2026. WebAPK Standalone Native Engine.</p>
     </div>
   </footer>
 

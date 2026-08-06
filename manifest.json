@@ -1,26 +1,41 @@
 {
-  "id": "./",
-  "name": "Opalis AI Suite - Gemini & Opal Hub",
+  "id": "com.opalis.ai.pwa",
+  "name": "Opalis AI Suite",
   "short_name": "Opalis AI",
-  "description": "Professional Ecosystem & Suite for Gemini Gems, Shared Sessions, and Google Opal Apps.",
+  "description": "Aplikasi Standalone Native PWA untuk Gemini Gems dan Google Opal Apps tanpa logo Chrome.",
   "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
+  "display_override": ["standalone", "fullscreen", "minimal-ui"],
+  "orientation": "portrait-primary",
   "background_color": "#0B0F19",
   "theme_color": "#6366F1",
-  "orientation": "any",
   "categories": ["productivity", "utilities", "developer tools", "artificial intelligence"],
   "icons": [
     {
       "src": "./icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
     },
     {
       "src": "./icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
-  ]
+  ],
+  "prefer_related_applications": false
 }
